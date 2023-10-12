@@ -8,14 +8,10 @@ public class MovePlayer : MonoBehaviour
 
     public Joystick jstk;
 
-    public Rigidbody rb;
-
     public float moveSpd;
    
     public float xInput;
     public float yInput;
-
-    Vector3 moveDirect;
 
     // Start is called before the first frame update
     void Start()
@@ -28,12 +24,10 @@ public class MovePlayer : MonoBehaviour
     {
         xInput = jstk.Horizontal;
         yInput = jstk.Vertical;
-        walk();
     }
 
     public void walk()
     {
-        moveDirect = orientation.forward * yInput + orientation.right * xInput;
-        rb.AddForce(moveDirect.normalized * moveSpd * 10f, ForceMode.Force);
+
     }
 }
