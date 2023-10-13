@@ -11,8 +11,8 @@ public class RotateObject : MonoBehaviour
     public float xRotate;
     public float yRotate;
 
-    public float mouseX;
-    public float mouseY;
+    public float inputX;
+    public float inputY;
 
     // Start is called before the first frame update
     void Start()
@@ -23,11 +23,11 @@ public class RotateObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mouseX = jstk.Horizontal * Time.deltaTime * sens;
-        mouseY = jstk.Vertical * Time.deltaTime * sens;
+        inputX = jstk.Horizontal * Time.deltaTime * sens;
+        inputY = jstk.Vertical * Time.deltaTime * sens;
 
-        yRotate += mouseX;
-        xRotate -= mouseY;
+        yRotate += inputX;
+        xRotate -= inputY;
 
         transform.rotation = Quaternion.Euler(0, yRotate, 0);
     }
