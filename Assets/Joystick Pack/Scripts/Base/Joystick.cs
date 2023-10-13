@@ -5,16 +5,23 @@ using UnityEngine.EventSystems;
 
 public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
+    //The horisontal position
     public float Horizontal { get { return (snapX) ? SnapFloat(input.x, AxisOptions.Horizontal) : input.x; } }
+
+    //The vertical position
     public float Vertical { get { return (snapY) ? SnapFloat(input.y, AxisOptions.Vertical) : input.y; } }
+
+    //The direction of the joystick
     public Vector2 Direction { get { return new Vector2(Horizontal, Vertical); } }
 
+    //Creates the handle range
     public float HandleRange
     {
         get { return handleRange; }
         set { handleRange = Mathf.Abs(value); }
     }
 
+    //Creates the dead zone
     public float DeadZone
     {
         get { return deadZone; }
@@ -42,13 +49,20 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     protected virtual void Start()
     {
+        //Gets the handle range
         HandleRange = handleRange;
+        //Gets the dead zone
         DeadZone = deadZone;
+
         baseRect = GetComponent<RectTransform>();
+
         canvas = GetComponentInParent<Canvas>();
+
+        //Error output if there is no canvas for the joystick
         if (canvas == null)
             Debug.LogError("The Joystick is not placed inside a canvas");
 
+        //Creates the joystick centre
         Vector2 center = new Vector2(0.5f, 0.5f);
         background.pivot = center;
         handle.anchorMin = center;
@@ -57,11 +71,13 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         handle.anchoredPosition = Vector2.zero;
     }
 
+    //Called when the finger first touches the screen or the mouse is pressed
     public virtual void OnPointerDown(PointerEventData eventData)
     {
         OnDrag(eventData);
     }
 
+    //Called when the finger or mouse drags the object
     public void OnDrag(PointerEventData eventData)
     {
         cam = null;
@@ -76,6 +92,7 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         handle.anchoredPosition = input * radius * handleRange;
     }
 
+    //Stops the joystick being dragged out of bounds
     protected virtual void HandleInput(float magnitude, Vector2 normalised, Vector2 radius, Camera cam)
     {
         if (magnitude > deadZone)
@@ -97,14 +114,17 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     private float SnapFloat(float value, AxisOptions snapAxis)
     {
+        //If theres no value return nothing
         if (value == 0)
             return value;
 
+        //If both axis are being used, 
         if (axisOptions == AxisOptions.Both)
         {
             float angle = Vector2.Angle(input, Vector2.up);
             if (snapAxis == AxisOptions.Horizontal)
             {
+                //The angle is the horisontal angle
                 if (angle < 22.5f || angle > 157.5f)
                     return 0;
                 else
@@ -112,6 +132,7 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
             }
             else if (snapAxis == AxisOptions.Vertical)
             {
+                //The angle is the vertical angle
                 if (angle > 67.5f && angle < 112.5f)
                     return 0;
                 else
@@ -129,6 +150,7 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         return 0;
     }
 
+    //When the finger or mouse releases the joystick set the position and values to 0
     public virtual void OnPointerUp(PointerEventData eventData)
     {
         input = Vector2.zero;
